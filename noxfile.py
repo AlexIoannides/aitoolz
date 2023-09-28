@@ -12,11 +12,19 @@ def run_tests(session):
 
 
 @nox.session(python=PYTHON, reuse_venv=True)
-def lint_code(session):
-    """Lint code and re-format where possible."""
+def format_code(session):
+    """Lint code and re-format where necessary."""
     session.install(".[dev]")
     session.run("black", "--config=pyproject.toml", ".")
     session.run("ruff", "check", ".", "--config=pyproject.toml", "--fix")
+
+
+@nox.session(python=PYTHON, reuse_venv=True)
+def check_code_formatting(session):
+    """Check code for formatting errors."""
+    session.install(".[dev]")
+    session.run("black", "--config=pyproject.toml", "--check", ".")
+    session.run("ruff", "check", ".", "--config=pyproject.toml")
 
 
 @nox.session(python=PYTHON, reuse_venv=True)
