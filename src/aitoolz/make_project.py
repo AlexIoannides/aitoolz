@@ -3,15 +3,14 @@ import argparse
 from importlib.resources import files
 from pathlib import Path
 from string import Template
-from sys import argv
+from typing import cast
 
-
-PROJECT_DIRS: tuple[str] = (
+PROJECT_DIRS: tuple[str, ...] = (
     "src",
     "src/${pkg_name}",
     "tests",
     ".github",
-    ".github/workflows"
+    ".github/workflows",
 )
 
 FILE_TEMPLATES_AND_TARGET_DIRS: dict[str, str] = {
@@ -22,16 +21,17 @@ FILE_TEMPLATES_AND_TARGET_DIRS: dict[str, str] = {
     "hello_world.py": "src/${pkg_name}",
     "test_hello_world.py": "tests",
     "python-package.yml": ".github/workflows",
-    ".gitignore": "."
+    ".gitignore": ".",
 }
 
 
 def _create_directory(
-        path_template: str, template_values: dict[str, str], project_root: Path
-    ) -> None:
+    path_template: str, template_values: dict[str, str], project_root: Path
+) -> None:
     """Create directory.
 
     Args:
+    ----
         path_template: Parent directory path templace.
         template_values: Values to use for rendering path_template.
         project_root: The ultimate parent directory.
@@ -41,14 +41,15 @@ def _create_directory(
 
 
 def _create_from_template(
-        template_filename: str,
-        values: dict[str, str],
-        parent_dir_template: str,
-        project_root: Path,
-    ) -> None:
+    template_filename: str,
+    values: dict[str, str],
+    parent_dir_template: str,
+    project_root: Path,
+) -> None:
     """Render template and save copy in parent directory.
 
     Args:
+    ----
         template_filename: The template within `aitoolz.resources.templates`.
         values: The values to use for rendering the template.
         parent_dir_template: Directory in which to create the file, relative to
@@ -56,9 +57,11 @@ def _create_from_template(
         project_root: The project's ultimate root directory.
 
     Raises:
+    ------
         FileNotFoundError: If template_filename or parent_dir can't be found.
     """
     template = files("aitoolz.resources.pkg_templates") / template_filename
+    template = cast(Path, template)
     if not template.exists():
         raise FileNotFoundError(f"{template} does not exist")
     template_rendered = Template(template.read_text()).safe_substitute(values)
@@ -74,6 +77,7 @@ def create_python_pkg_project(pkg_name: str) -> None:
     """Create a skeleton Python package project ready for development.
 
     Args:
+    ----
         pkg_name: The package's name.
     """
     project_root = Path(".") / pkg_name
@@ -82,7 +86,7 @@ def create_python_pkg_project(pkg_name: str) -> None:
     project_root.mkdir()
 
     template_values = {"pkg_name": pkg_name}
-    
+
     for dir in PROJECT_DIRS:
         _create_directory(dir, template_values, project_root)
 
