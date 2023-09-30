@@ -39,9 +39,6 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-aitoolz = ["*.toml", "*.yml", "*.md", ".gitignore"]
-
 [tool.black]
 line-length = 88
 extend-exclude = "/resources/*"
