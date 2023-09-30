@@ -1,5 +1,5 @@
 """Dummy tests."""
-from aitoolz.hello_world import message
+from ${pkg_name}.hello_world import message
 
 
 def test_message():
