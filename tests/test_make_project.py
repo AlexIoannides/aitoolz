@@ -14,9 +14,13 @@ def test_project_name() -> str:
 
 @fixture(scope="module")
 def setup_and_teardown(test_project_name: str) -> Iterable[None]:
-    create_python_pkg_project(test_project_name)
-    yield None
-    shutil.rmtree(test_project_name, ignore_errors=True)
+    try:
+        create_python_pkg_project(test_project_name)
+        yield None
+    except Exception as e:
+        raise e
+    finally:
+        shutil.rmtree(test_project_name, ignore_errors=True)
 
 
 @mark.usefixtures("setup_and_teardown")
