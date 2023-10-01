@@ -19,6 +19,7 @@ FILE_TEMPLATES_AND_TARGET_DIRS: dict[str, str] = {
     "noxfile.py": ".",
     "__init__.py": "src/${pkg_name}",
     "hello_world.py": "src/${pkg_name}",
+    "py.typed": "src/${pkg_name}",
     "test_hello_world.py": "tests",
     "python-package.yml": ".github/workflows",
     ".gitignore": ".",
