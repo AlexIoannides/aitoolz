@@ -24,16 +24,16 @@ The `aitoolz.make_project` module exposes the `create_python_pkg_project` functi
 - Dev task automation using Nox.
 - Fully configured CI using GitHub Actions.
 
-This is an opinionated setup that mirrors how I like to develop projects. This can also be called from the command line using the Make Empty Project command - e.g.,
+This is an opinionated setup that reflects how I like to develop projects. This can also be called from the command line using the Make Empty Project (MEP) command - e.g.,
 
 ```text
-mep my-package
+mep my_package
 ```
 
-Either of these commands will create a directory structure and skeleton files,
+Where `my_package` can be replaced with any valid Python module name. Either of these commands will create a directory structure and skeleton files,
 
 ```text
-my-package
+my_package
 ├── .github
 │   └── workflows
 │       └── python-package.yml
@@ -42,7 +42,7 @@ my-package
 ├── noxfile.py
 ├── pyproject.toml
 ├── src
-│   └── my-package
+│   └── my_package
 │       ├── __init__.py
 │       └── hello_world.py
 └── tests
