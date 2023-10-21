@@ -14,7 +14,7 @@ $ pip install -e ".[dev]"
 
 We use the [Nox](https://nox.thea.codes/en/stable/) for scripting developer tasks, such as formatting code, checking types and running tests. These tasks are defined in `noxfile.py` a list of which can be returned on the command line,
 
-```test
+```text
 $ nox --list
 
 Sessions defined in /Users/.../noxfile.py:
@@ -29,7 +29,7 @@ sessions marked with * are selected, sessions marked with - are skipped.
 
 Single tasks can easily be executed - e.g.,
 
-```test
+```text
 $ nox -s run_tests
 
 nox > Running session run_tests-3.10
