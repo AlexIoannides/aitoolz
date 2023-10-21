@@ -1,4 +1,5 @@
 """Tests for the make_project.py module."""
+import os
 import shutil
 from collections.abc import Iterable
 from pathlib import Path
@@ -53,6 +54,31 @@ def test_create_python_pkg_project_raises_exception_with_repeated_calls(
 ):
     with raises(RuntimeError, match="directory already exists"):
         create_python_pkg_project(test_project_name)
+
+
+def test_create_python_pkg_project_creates_files_when_called_here_in_empty_dir(
+    test_project_name: str,
+):
+    try:
+        project_dir = Path.cwd() / test_project_name
+        project_dir.mkdir(exist_ok=True)
+        os.chdir(project_dir)
+        create_python_pkg_project(test_project_name, here=True)
+        pyproject_dot_toml = project_dir / "pyproject.toml"
+        assert pyproject_dot_toml.exists
+    except Exception:
+        assert False
+    finally:
+        os.chdir(project_dir.parent)
+        shutil.rmtree(project_dir, ignore_errors=True)
+
+
+@mark.usefixtures("setup_and_teardown")
+def test_create_python_pkg_project_raises_exception_when_called_here_in_non_empty_dir(
+    test_project_name: str,
+):
+    with raises(RuntimeError, match="working directory must be empty"):
+        create_python_pkg_project(test_project_name, here=True)
 
 
 def test_cli_command():

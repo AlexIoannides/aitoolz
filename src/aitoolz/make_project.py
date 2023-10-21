@@ -74,17 +74,31 @@ def _create_from_template(
     new_file.write_text(template_rendered)
 
 
-def create_python_pkg_project(pkg_name: str) -> None:
+def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
     """Create a skeleton Python package project ready for development.
 
     Args:
     ----
         pkg_name: The package's name.
+        here: Whether or not to create the package project file in the curret directory.
+
+    Raises:
+    ------
+        RuntimeError: If `here` is `True` the current working directory is not empty.
+        RuntimeError: If `here` is `False` and a directory named `pkg_name` exists in 
+            the current working directory.
     """
-    project_root = Path(".") / pkg_name
-    if project_root.exists():
-        raise RuntimeError(f"{project_root} directory already exists.")
-    project_root.mkdir()
+    if here:
+        project_root = Path(".")
+        dir_contents = [e for e in project_root.glob("*")]
+        if dir_contents:
+            msg = "Current working directory must be empty to create template project."
+            raise RuntimeError(msg)
+    else:
+        project_root = Path(".") / pkg_name
+        if project_root.exists():
+            raise RuntimeError(f"{project_root} directory already exists.")
+        project_root.mkdir()
 
     template_values = {"pkg_name": pkg_name}
 
@@ -99,5 +113,6 @@ def cli() -> None:
     """Entrypoint for use on the CLI."""
     parser = argparse.ArgumentParser(description="Create a Python package project.")
     parser.add_argument("package_name", type=str)
+    parser.add_argument("--here", type=bool, default=False)
     args = parser.parse_args()
-    create_python_pkg_project(args.package_name)
+    create_python_pkg_project(args.package_name, args.here)
