@@ -49,6 +49,14 @@ def test_create_python_pkg_project_configured_static_code_checks_that_pass(
 
 
 @mark.usefixtures("setup_and_teardown")
+def test_create_python_pkg_project_raises_exception_with_invalid_pkg_name(
+    test_project_name: str,
+):
+    with raises(ValueError, match="not a valid Python object name"):
+        create_python_pkg_project(f"1{test_project_name}$")
+
+
+@mark.usefixtures("setup_and_teardown")
 def test_create_python_pkg_project_raises_exception_with_repeated_calls(
     test_project_name: str,
 ):

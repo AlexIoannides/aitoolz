@@ -5,6 +5,8 @@ from pathlib import Path
 from string import Template
 from typing import cast
 
+from aitoolz.utils import is_valid_python_name
+
 PROJECT_DIRS: tuple[str, ...] = (
     "src",
     "src/${pkg_name}",
@@ -87,7 +89,11 @@ def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
         RuntimeError: If `here` is `True` the current working directory is not empty.
         RuntimeError: If `here` is `False` and a directory named `pkg_name` exists in
             the current working directory.
+        ValueError: If `pkg_name` is not a valid Python object name.
     """
+    if not is_valid_python_name(pkg_name):
+        raise ValueError(f"{pkg_name} is not a valid Python object name.")
+
     if here:
         project_root = Path.cwd()
         dir_contents = [e for e in project_root.glob("*")]
