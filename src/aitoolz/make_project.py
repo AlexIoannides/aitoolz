@@ -1,5 +1,6 @@
 """Create a skeleton Python package project ready for development."""
 import argparse
+import sys
 from importlib.resources import files
 from pathlib import Path
 from string import Template
@@ -76,25 +77,35 @@ def _create_from_template(
     new_file.write_text(template_rendered)
 
 
-def create_python_pkg_project(pkg_name: str) -> None:
+def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
     """Create a skeleton Python package project ready for development.
 
     Args:
     ----
         pkg_name: The package's name.
+        here: Whether or not to create the package project file in the curret directory.
 
     Raises:
     ------
+        RuntimeError: If `here` is `True` the current working directory is not empty.
+        RuntimeError: If `here` is `False` and a directory named `pkg_name` exists in
+            the current working directory.
         ValueError: If `pkg_name` is not a valid Python object name.
-        RuntimeError: If a project directory names `pkg_name` already exists.
     """
     if not is_valid_python_name(pkg_name):
         raise ValueError(f"{pkg_name} is not a valid Python object name.")
 
-    project_root = Path(".") / pkg_name
-    if project_root.exists():
-        raise RuntimeError(f"{project_root} directory already exists.")
-    project_root.mkdir()
+    if here:
+        project_root = Path.cwd()
+        dir_contents = [e for e in project_root.glob("*")]
+        if dir_contents:
+            msg = "Current working directory must be empty to create template project."
+            raise RuntimeError(msg)
+    else:
+        project_root = Path(".") / pkg_name
+        if project_root.exists():
+            raise RuntimeError(f"{project_root} directory already exists.")
+        project_root.mkdir()
 
     template_values = {"pkg_name": pkg_name}
 
@@ -107,7 +118,25 @@ def create_python_pkg_project(pkg_name: str) -> None:
 
 def cli() -> None:
     """Entrypoint for use on the CLI."""
-    parser = argparse.ArgumentParser(description="Create a Python package project.")
-    parser.add_argument("package_name", type=str)
+    parser = argparse.ArgumentParser(
+        description="Create a Python package project ready for development"
+    )
+    parser.add_argument(
+        "package_name",
+        type=str,
+        help="will be used throughout project files as well for the package",
+    )
+    parser.add_argument(
+        "--here",
+        action="store_true",
+        help="create project in the current directory (must be empty)",
+    )
     args = parser.parse_args()
-    create_python_pkg_project(args.package_name)
+
+    try:
+        create_python_pkg_project(args.package_name, args.here)
+        sys.exit(0)
+    except (RuntimeError, ValueError) as e:
+        e_msg = str(e)
+        print(f"ERROR: {e_msg[:1].lower() + e_msg[1:]}")
+        sys.exit(1)

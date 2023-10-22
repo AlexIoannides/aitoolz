@@ -1,4 +1,5 @@
 """Tests for the make_project.py module."""
+import os
 import shutil
 from collections.abc import Iterable
 from pathlib import Path
@@ -63,12 +64,36 @@ def test_create_python_pkg_project_raises_exception_with_repeated_calls(
         create_python_pkg_project(test_project_name)
 
 
+def test_create_python_pkg_project_creates_files_when_called_here_in_empty_dir():
+    try:
+        test_project_name = "foobar42"
+        project_dir = Path.cwd() / test_project_name
+        project_dir.mkdir()
+        os.chdir(project_dir)
+        create_python_pkg_project(test_project_name, here=True)
+        pyproject_dot_toml = Path("pyproject.toml")
+        assert pyproject_dot_toml.exists()
+    except Exception:
+        assert False
+    finally:
+        os.chdir(project_dir.parent)
+        shutil.rmtree(project_dir, ignore_errors=True)
+
+
+@mark.usefixtures("setup_and_teardown")
+def test_create_python_pkg_project_raises_exception_when_called_here_in_non_empty_dir(
+    test_project_name: str,
+):
+    with raises(RuntimeError, match="working directory must be empty"):
+        create_python_pkg_project(test_project_name, here=True)
+
+
 def test_cli_command():
     try:
         pkg_name = "foo"
-        run(["mep", pkg_name], check=True)
+        out = run(["mep", pkg_name], check=True)
         readme = Path(".") / pkg_name / "README.md"
-        if readme.exists():
+        if out.returncode == 0 and readme.exists():
             assert True
         else:
             assert False
@@ -76,3 +101,17 @@ def test_cli_command():
         assert False
     finally:
         shutil.rmtree(pkg_name, ignore_errors=True)
+
+
+def test_cli_command_handles_exceptions():
+    out = run(["mep", "1foo"], capture_output=True, text=True)
+    if out.returncode != 0 and "ERROR: 1foo is not a valid" in out.stdout:
+        assert True
+    else:
+        assert False
+
+    out = run(["mep", "foo", "--here"], capture_output=True, text=True)
+    if out.returncode != 0 and "ERROR: current working directory must be" in out.stdout:
+        assert True
+    else:
+        assert False
