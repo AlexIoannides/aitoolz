@@ -5,14 +5,15 @@ PYTHON = ["3.10"]
 
 
 @nox.session(python=PYTHON)
-def run_tests(session):
+def run_tests(session: nox.Session):
     """Run unit tests."""
     session.install(".[dev]")
-    session.run("pytest")
+    pytest_args = session.posargs if session.posargs else []
+    session.run("pytest", "-s", *pytest_args)
 
 
 @nox.session(python=PYTHON, reuse_venv=True)
-def format_code(session):
+def format_code(session: nox.Session):
     """Lint code and re-format where necessary."""
     session.install(".[dev]")
     session.run("black", "--config=pyproject.toml", ".")
@@ -20,7 +21,7 @@ def format_code(session):
 
 
 @nox.session(python=PYTHON, reuse_venv=True)
-def check_code_formatting(session):
+def check_code_formatting(session: nox.Session):
     """Check code for formatting errors."""
     session.install(".[dev]")
     session.run("black", "--config=pyproject.toml", "--check", ".")
@@ -28,7 +29,7 @@ def check_code_formatting(session):
 
 
 @nox.session(python=PYTHON, reuse_venv=True)
-def check_types(session):
+def check_types(session: nox.Session):
     """Run static type checking."""
     session.install(".[dev]")
     session.run("mypy", "src", "tests", "noxfile.py")
