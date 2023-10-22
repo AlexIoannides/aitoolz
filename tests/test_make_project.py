@@ -91,9 +91,9 @@ def test_create_python_pkg_project_raises_exception_when_called_here_in_non_empt
 def test_cli_command():
     try:
         pkg_name = "foo"
-        run(["mep", pkg_name], check=True)
+        out = run(["mep", pkg_name], check=True)
         readme = Path(".") / pkg_name / "README.md"
-        if readme.exists():
+        if out.returncode == 0 and readme.exists():
             assert True
         else:
             assert False
@@ -101,3 +101,17 @@ def test_cli_command():
         assert False
     finally:
         shutil.rmtree(pkg_name, ignore_errors=True)
+
+
+def test_cli_command_handles_exceptions():
+    out = run(["mep", "1foo"], capture_output=True, text=True)
+    if out.returncode != 0 and "ERROR: 1foo is not a valid" in out.stdout:
+        assert True
+    else:
+        assert False
+
+    out = run(["mep", "foo", "--here"], capture_output=True, text=True)
+    if out.returncode != 0 and "ERROR: current working directory must be" in out.stdout:
+        assert True
+    else:
+        assert False

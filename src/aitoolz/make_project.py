@@ -1,5 +1,6 @@
 """Create a skeleton Python package project ready for development."""
 import argparse
+import sys
 from importlib.resources import files
 from pathlib import Path
 from string import Template
@@ -117,8 +118,25 @@ def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
 
 def cli() -> None:
     """Entrypoint for use on the CLI."""
-    parser = argparse.ArgumentParser(description="Create a Python package project.")
-    parser.add_argument("package_name", type=str)
-    parser.add_argument("--here", type=bool, default=False)
+    parser = argparse.ArgumentParser(
+        description="Create a Python package project ready for development"
+    )
+    parser.add_argument(
+        "package_name",
+        type=str,
+        help="will be used throughout project files as well for the package",
+    )
+    parser.add_argument(
+        "--here",
+        action="store_true",
+        help="create project in the current directory (must be empty)",
+    )
     args = parser.parse_args()
-    create_python_pkg_project(args.package_name, args.here)
+
+    try:
+        create_python_pkg_project(args.package_name, args.here)
+        sys.exit(0)
+    except (RuntimeError, ValueError) as e:
+        e_msg = str(e)
+        print(f"ERROR: {e_msg[:1].lower() + e_msg[1:]}")
+        sys.exit(1)
