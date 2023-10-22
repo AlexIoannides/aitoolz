@@ -85,11 +85,11 @@ def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
     Raises:
     ------
         RuntimeError: If `here` is `True` the current working directory is not empty.
-        RuntimeError: If `here` is `False` and a directory named `pkg_name` exists in 
+        RuntimeError: If `here` is `False` and a directory named `pkg_name` exists in
             the current working directory.
     """
     if here:
-        project_root = Path(".")
+        project_root = Path.cwd()
         dir_contents = [e for e in project_root.glob("*")]
         if dir_contents:
             msg = "Current working directory must be empty to create template project."

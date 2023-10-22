@@ -56,16 +56,15 @@ def test_create_python_pkg_project_raises_exception_with_repeated_calls(
         create_python_pkg_project(test_project_name)
 
 
-def test_create_python_pkg_project_creates_files_when_called_here_in_empty_dir(
-    test_project_name: str,
-):
+def test_create_python_pkg_project_creates_files_when_called_here_in_empty_dir():
     try:
+        test_project_name = "foobar42"
         project_dir = Path.cwd() / test_project_name
-        project_dir.mkdir(exist_ok=True)
+        project_dir.mkdir()
         os.chdir(project_dir)
         create_python_pkg_project(test_project_name, here=True)
-        pyproject_dot_toml = project_dir / "pyproject.toml"
-        assert pyproject_dot_toml.exists
+        pyproject_dot_toml = Path("pyproject.toml")
+        assert pyproject_dot_toml.exists()
     except Exception:
         assert False
     finally:
