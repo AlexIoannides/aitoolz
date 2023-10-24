@@ -1,5 +1,8 @@
 """Developer task automation."""
+import os
+
 import nox
+from dotenv import load_dotenv
 
 PYTHON = ["3.10"]
 
@@ -33,3 +36,18 @@ def check_types(session: nox.Session):
     """Run static type checking."""
     session.install(".[dev]")
     session.run("mypy", "src", "tests", "noxfile.py")
+
+
+@nox.session(python=PYTHON, reuse_venv=True)
+def build_and_deploy(session: nox.Session):
+    """Build wheel and deploy to PyPI."""
+    load_dotenv()
+    try:
+        PYPI_USR = os.environ["PYPI_USR"]
+        PYPI_PWD = os.environ["PYPI_PWD"]
+    except KeyError as e:
+        print(f"ERROR: cannot build wheel and deploy to PyPI - {str(e)}")
+    session.install(".[deploy]")
+    session.run("rm", "-rf", "dist")
+    session.run("python", "-m", "build")
+    session.run("twine", "upload", "dist/*", "-u", PYPI_USR, "-p", PYPI_PWD)
