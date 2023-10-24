@@ -4,6 +4,12 @@ import os
 import nox
 from dotenv import load_dotenv
 
+nox.options.sessions = [
+    "check_code_formatting",
+    "check_types",
+    "run_tests",
+]
+
 
 @nox.session()
 def run_tests(session: nox.Session):
