@@ -2,7 +2,6 @@
 import os
 
 import nox
-from dotenv import load_dotenv
 
 nox.options.sessions = [
     "check_code_formatting",
@@ -47,12 +46,17 @@ def check_types(session: nox.Session):
 @nox.session(python=PYTHON, reuse_venv=True)
 def build_and_deploy(session: nox.Session):
     """Build wheel and deploy to PyPI."""
-    load_dotenv()
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ModuleNotFoundError:
+        session.warn("Expecting PYPI_USR and PYPI_PWD in local environment variables.")
+
     try:
         PYPI_USR = os.environ["PYPI_USR"]
         PYPI_PWD = os.environ["PYPI_PWD"]
     except KeyError as e:
-        print(f"ERROR: cannot build wheel and deploy to PyPI - {str(e)}")
+        session.error(f"{str(e)} not found in local environment variables.")
     session.install(".[deploy]")
     session.run("rm", "-rf", "dist")
     session.run("python", "-m", "build")
