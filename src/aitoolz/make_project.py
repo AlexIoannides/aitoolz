@@ -98,7 +98,7 @@ def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
 
     if here:
         project_root = Path.cwd()
-        dir_contents = [e for e in project_root.glob("*")]
+        dir_contents = [e for e in project_root.glob("*") if e.name != ".git"]
         if dir_contents:
             msg = "Current working directory must be empty to create template project."
             raise RuntimeError(msg)

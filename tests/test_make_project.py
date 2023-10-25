@@ -69,6 +69,7 @@ def test_create_python_pkg_project_creates_files_when_called_here_in_empty_dir()
         test_project_name = "foobar42"
         project_dir = Path.cwd() / test_project_name
         project_dir.mkdir()
+        project_dir.joinpath(".git").mkdir()  # should ignore .git
         os.chdir(project_dir)
         create_python_pkg_project(test_project_name, here=True)
         pyproject_dot_toml = Path("pyproject.toml")
