@@ -4,11 +4,19 @@ Various Python tools, by Alex Ioannides (AI). Some of them might be useful for a
 
 ## Installing
 
-aitoolz has yet to be released to PyPI. In the meantime, the best way to install it is directly from this repo, which you can do via
+You can install aitoolz from PyPI using
 
 ```text
-pip install pip@git+https://github.com/alexioannides/aitoolz
+pip install aitoolz
 ```
+
+Alternatively, you can install directly from the `main` branch of this repo via
+
+```text
+pip install git+https://github.com/alexioannides/aitoolz.git@main
+```
+
+Where the `@XXXX` component of the URI can be substituted for any branch, tag or commit hash. See the [pip docs](https://pip.pypa.io/en/stable/topics/vcs-support/#supported-vcs) for more info.
 
 ## Features
 
@@ -22,7 +30,7 @@ The `aitoolz.make_project` module exposes the `create_python_pkg_project` functi
 - Fully configured code formatting and checking using Ruff and Black.
 - Fully configured static type checking using MyPy.
 - Dev task automation using Nox.
-- Fully configured CI using GitHub Actions.
+- Fully configured CICD using GitHub Actions.
 
 This is an opinionated setup that reflects how I like to develop projects. This can also be called from the command line using the Make Empty Project (MEP) command - e.g.,
 
@@ -36,7 +44,8 @@ Where `my_package` can be replaced with any valid Python module name. Either of 
 my_package
 ├── .github
 │   └── workflows
-│       └── python-package.yml
+│       ├── python-package-ci.yml
+│       └── python-package-cd.yml
 ├── .gitignore
 ├── README.md
 ├── noxfile.py
