@@ -46,6 +46,7 @@ def build_and_deploy(session: nox.Session):
     """Build wheel and deploy to PyPI."""
     try:
         from dotenv import load_dotenv
+
         load_dotenv()
     except ModuleNotFoundError:
         session.warn("Expecting PYPI_USR and PYPI_PWD in local environment variables.")
