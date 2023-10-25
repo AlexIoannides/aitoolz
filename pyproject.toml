@@ -1,6 +1,6 @@
 [project]
 name = "aitoolz"
-version = "0.1.0.dev5"
+version = "0.1.0"
 authors = [
   { name="Alex Ioannides", email="alex@bodyworkml.com" },
 ]
