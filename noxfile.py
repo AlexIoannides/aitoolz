@@ -17,7 +17,7 @@ def run_tests(session: nox.Session):
     """Run unit tests."""
     session.install(".[dev]")
     pytest_args = session.posargs if session.posargs else []
-    session.run("pytest", "-s", *pytest_args)
+    session.run("pytest", *pytest_args)
 
 
 @nox.session(python=PYTHON, reuse_venv=True)

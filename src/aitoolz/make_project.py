@@ -24,7 +24,8 @@ FILE_TEMPLATES_AND_TARGET_DIRS: dict[str, str] = {
     "hello_world.py": "src/${pkg_name}",
     "py.typed": "src/${pkg_name}",
     "test_hello_world.py": "tests",
-    "python-package.yml": ".github/workflows",
+    "python-package-ci.yml": ".github/workflows",
+    "python-package-cd.yml": ".github/workflows",
     ".gitignore": ".",
 }
 
