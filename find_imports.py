@@ -1,4 +1,4 @@
-"""Find all explicit imports within a Python package."""
+"""Find all explicit 3rd party package imports within a Python file or module."""
 import re
 import sys
 from importlib import metadata
