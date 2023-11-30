@@ -1,4 +1,7 @@
-"""Find all explicit 3rd party package imports within a Python file or module."""
+"""Find all explicit external package imports within a Python file or module.
+
+I.e., Find all imported packages that are not in the Python standard library.
+"""
 import argparse
 import re
 import sys
@@ -10,7 +13,7 @@ FROM_PKG_REGEX = r"^from\s(\w+)[\s\.].*import"
 
 
 def _extract_imports_from_py_file(file: Path) -> set[str]:
-    """Return all valid import from a text file."""
+    """Return all valid imports from a readable file."""
     code_lines = [line.strip() for line in file.read_text().split("\n")]
     import_pkg_imports = [
         re.findall(IMPORT_PKG_REGEX, line)
@@ -58,7 +61,20 @@ def _is_std_lib_pkg(pkg_name: str) -> bool:
 
 
 def find_imports(module_path: str) -> list[str]:
-    """Find all explicit imports for a Python module."""
+    """Find all explicit external package imports in a Python module.
+
+    Args:
+    ----
+        module_path: The file or directory to search in.
+
+    Raises:
+    ------
+        FileNotFoundError: If the file or directory cannot be found.
+
+    Returns:
+    -------
+        A list of package names.
+    """
     module = Path(module_path)
     if not module.exists():
         raise FileNotFoundError(f"can't find {module_path}")
@@ -75,7 +91,7 @@ def find_imports(module_path: str) -> list[str]:
     return list(distinct_imports)
 
 
-def cli() -> None:
+def _cli() -> None:
     """Entrypoint for use on the CLI."""
     parser = argparse.ArgumentParser(
         description="Find all explicit imports not in the Python standard library"

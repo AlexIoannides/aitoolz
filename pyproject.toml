@@ -37,8 +37,8 @@ deploy = [
 "Bug Tracker" = "https://github.com/AlexIoannides/aitoolz/issues"
 
 [project.scripts]
-mep = "aitoolz.make_project:cli"
-find-imports = "aitoolz.find_imports:cli"
+mep = "aitoolz.make_project:_cli"
+find-imports = "aitoolz.find_imports:_cli"
 
 [build-system]
 requires = ["setuptools>=68.0"]

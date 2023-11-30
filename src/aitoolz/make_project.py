@@ -117,7 +117,7 @@ def create_python_pkg_project(pkg_name: str, here: bool | None = None) -> None:
         _create_from_template(template, template_values, target_dir, project_root)
 
 
-def cli() -> None:
+def _cli() -> None:
     """Entrypoint for use on the CLI."""
     parser = argparse.ArgumentParser(
         description="Create a Python package project ready for development"
