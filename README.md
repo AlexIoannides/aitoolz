@@ -59,3 +59,19 @@ my_package
 ```
 
 This has been tested to be installable and for all dev tasks automated with Nox to pass - use `nox --list` to see them all.
+
+### Find External Dependencies in a Python Module or Source Folder
+
+The `aitoolz.find_imports` module exposes the `find_imports` function that returns a list of all package dependencies imported into a Python module or source folder - i.e., all dependencies that are not in the Python standard library.
+
+This can also be called from the command line - e.g.,
+
+```text
+find-imports src/my_package
+```
+
+Or,
+
+```text
+find-imports my_module.py
+```
