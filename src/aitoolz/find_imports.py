@@ -36,6 +36,7 @@ def _extract_imports_from_py_file(file: Path) -> set[str]:
 
 def _is_std_lib_pkg(pkg_name: str) -> bool:
     """Is the named package in the Python standard library."""
+
     def _fallback_test(pkg_name: str) -> bool:
         try:
             metadata.metadata(pkg_name)
