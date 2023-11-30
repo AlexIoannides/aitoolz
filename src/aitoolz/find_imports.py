@@ -1,4 +1,5 @@
 """Find all explicit 3rd party package imports within a Python file or module."""
+import argparse
 import re
 import sys
 from importlib import metadata
@@ -74,26 +75,25 @@ def find_imports(module_path: str) -> list[str]:
     return list(distinct_imports)
 
 
-def find_imports_and_installed_versions(module_path: str) -> list[str]:
-    """Find all explicit imports and installed version for a Python module."""
-    imports = find_imports(module_path)
-    dependencies: set[str] = set()
-    for pkg in imports:
-        try:
-            dependency = f"{pkg}=={metadata.version(pkg)}"
-        except metadata.PackageNotFoundError:
-            dependency = pkg
-        dependencies.add(dependency)
-    return list(dependencies)
+def cli() -> None:
+    """Entrypoint for use on the CLI."""
+    parser = argparse.ArgumentParser(
+        description="Find all explicit imports not in the Python standard library"
+    )
+    parser.add_argument(
+        "src_dir_or_file",
+        type=str,
+        help="to search for imports",
+    )
+    args = parser.parse_args()
 
-
-if __name__ == "__main__":
-    module_path = sys.argv[1]
-    if len(sys.argv) > 2 and sys.argv[1] == "--versions":
-        module_path = sys.argv[2]
-        for dependency in find_imports_and_installed_versions(module_path):
-            print(dependency)
-    else:
-        module_path = sys.argv[1]
-        for dependency in find_imports(module_path):
-            print(dependency)
+    try:
+        imports = find_imports(args.src_dir_or_file)
+        if imports is not None:
+            for dependency in imports:
+                print(dependency)
+        sys.exit(0)
+    except FileNotFoundError as e:
+        e_msg = str(e)
+        print(f"ERROR: {e_msg[:1].lower() + e_msg[1:]}")
+        sys.exit(1)

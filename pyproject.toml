@@ -38,6 +38,7 @@ deploy = [
 
 [project.scripts]
 mep = "aitoolz.make_project:cli"
+find-imports = "aitoolz.find_imports:cli"
 
 [build-system]
 requires = ["setuptools>=68.0"]
